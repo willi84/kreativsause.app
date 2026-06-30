@@ -1,0 +1,55 @@
+body{
+margin: 0;
+}
+.flex { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+}
+.links { 
+    display: flex; 
+    justify-content: center; 
+    align-items: left;
+    position: absolute;
+    top: 10%;
+    left: 5%;
+}
+@media only screen and (max-width: 1000px) {
+  .links {
+    margin: 0 auto;
+        width: 100%;
+        left: 0%;
+  }
+}
+.links li{
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid green;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    width: 200px;
+}
+.links li a{
+    text-decoration: none;
+    padding-left: 30px;
+    color: green;
+}
+.links ul{
+    list-style-type: none; /* Remove bullets */
+    margin-left: 0;
+    padding-left: 0;
+}
+.links ul li img{
+    width: 20px;
+    height: 20px;
+    position: relative;
+    top: 4px;
+}
+.links ul li img + a{
+    padding-left: 10px;
+}
+.links ul li a{
+    line-height: 20px;
+}

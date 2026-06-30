@@ -1,0 +1,36 @@
+{
+    "greeting": "Hello, World!",
+    "logo": {
+        "src": "/assets/logo.svg",
+        "alt": "Logo Image"
+    },
+    "footer": {
+        "text": "Made with ❤️ by Robert Willemelis"
+    },
+    "links": [
+        {
+            "text": "Twitter",
+            "url": "https://twitter.com/robertspd",
+            "target": "_blank",
+            "image_before": "twitter.svg",
+            "size": [20,20],
+            "type": "button"
+        },
+        {
+            "text": "Github",
+            "url": "https://github.com/willi84/",
+            "target": "_blank",
+            "image_before": "github.svg",
+            "size": [20,20],
+            "type": "button"
+        },
+        {
+            "text": "LinkedIn",
+            "url": "https://de.linkedin.com/in/robertwillemelis",
+            "target": "_blank",
+            "image_before": "linkedin.svg",
+            "size": [20,20],
+            "type": "button"
+        }
+    ]
+}

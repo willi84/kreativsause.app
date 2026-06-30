@@ -1,0 +1,132 @@
+---
+layout: base.template.njk
+title: Welcome to kreativsause.app
+navigation: true
+footer: true
+menu:
+  label: Start
+  emoji: 🏠
+  order: 10
+---
+
+{%- from "./../templates/_setup/macros/component.macro.njk" import component -%}
+
+
+{% set DATA = workshops %}
+{% set items = workshops.workshops %}
+
+{% set categories = ['montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag', 'samstag', 'sonntag'] %}
+{# {% set categories = all.categories | default(['workshops']) %} #}
+{% set statusClasses = all.configuration.status | default({}) %}
+{% set eventCategories = ['hackathons', 'conferences', 'workshops'] %}
+{% set categoryLabels = {
+  montag: '💛 Montag',
+  dienstag: '💚 Dienstag',
+  mittwoch: '💙 Mittwoch',
+  donnerstag: '🧡 Donnerstag',
+  freitag: '🤍 Freitag',
+  samstag: '❤️ Samstag',
+  sonntag: '💜 Sonntag'
+} 
+%}
+
+
+<section class="portfolio-shell" data-portfolio data-view="cards" data-theme="dark">
+    <div class="container py-4 py-lg-5">
+        {{
+            component("menu", {
+                page: page,
+                url: "/plan",
+                main: main,
+                title: "Kreativsause.app",
+                subtitle: "Ein kleiner Helfer für die Kreativsause 2026",
+                state: "in Arbeit",
+                views: [{ key: 'cards', label: '▦ Cards'}, { key: 'list', label: '☰ Liste' }]
+            })
+        }}
+        <section search-context>
+            
+    <nav class="portfolio-toolbar mb-4  z-2 position-relative" aria-label="Portfolio Filter">
+        <div class="row g-3 align-items-center">
+            <div class="col-12 col-lg-8">
+                {{
+                    component("search", {
+                        label: "Portfolio durchsuchen",
+                        class: "portfolio-input",
+                        placeholder: "grep: Titel, Ort, Status, Tags …"
+                    })
+                }}
+            </div>
+            <div class="col-12 col-lg-4 portfolio-actions mt-0">
+                {{
+                    component("dropdown", {
+                        values: [ 'date-desc','date-asc', 'title-asc', 'title-desc', 'status-asc', 'status-desc'],
+                        defaultValue: "date-desc",
+                        key: "bs-sort",
+                        label: "Sortierung",
+                        sort: "[data-category-section]"
+                    })
+                }}
+            </div>
+            <div class="col-12 col-lg-12">
+                <div class="portfolio-filter-scroll gap-2 justify-content-lg-end" data-category-filter>
+                    {{
+                        component("filter-button", {
+                            key: "all",
+                            label: "Alle",
+                            css: 'mb-2',
+                            length: categories | length
+                        })
+                    }}
+                    {% for category in categories %}
+                        {{
+                            component("filter-button", {
+                                key: category,
+                                label: categoryLabels[category] | default(category),
+                                css: 'mb-2',
+                                length: DATA[category] | length
+                            })
+                        }}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+
+    {% for category in categories %}
+        <section class="portfolio-category mb-5" data-category-section="{{ category }}">
+            <div class="portfolio-category-head d-flex align-items-end justify-content-between gap-3 mb-3">
+                <div>
+                    <h2 class="h4 mb-0">{{ categoryLabels[category] | default(category) }}</h2>
+                </div>
+                <span class="portfolio-count"><span data-count>{{ DATA[category] | length }}</span> items</span>
+            </div>
+
+            <div class="portfolio-grid">
+                {% for key, item in items %}
+                {% if item.days | contains(category) %}
+                    {% set statusClass = statusClasses[item.status] | default('text-bg-secondary') %}
+                    {% set meta = [
+                        { key: "date", start: item.start, end: item.end },
+                        { key: "project", value: item.project },
+                        { key: "role", value: item.role },
+                        { key: "conductor", value: item.conductor },
+                        { key: "type", value: item.type }
+                        ] 
+                    %}
+                    {% set css_link = "btn btn-sm portfolio-link" %}
+                    {% set links = item.links | default([]) %}
+
+                        {{ component("card", { item: item, category: category, meta: meta, links: links})}}
+                    
+                {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+    {% endfor %}
+
+    <p class="portfolio-empty d-none" data-search-empty>Keine passenden Einträge gefunden.</p>
+</section>
+    </div>
+</section>

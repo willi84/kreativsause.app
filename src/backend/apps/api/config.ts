@@ -1,0 +1,1 @@
+export const CONFIG_KEYS = ['status', 'locations', 'icons'];

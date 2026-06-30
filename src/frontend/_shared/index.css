@@ -1,0 +1,27 @@
+@import './variables/variables.css';
+@import './css/deprecated.css';
+@import './../components/organisms/portfolio/portfolio.css';
+/* @import './../../pages/portfolio/portfolio.css'; */
+/* @import './components/_fonts.css';
+@import './../../components/molecules/search/search.molecule.css';
+@import './components/_levels.css'; */
+@import './../components/atoms/button/button.atom.css';
+@import './../components/molecules/search/search.molecule.css';
+.hidden {
+    display: none !important;
+}
+
+.text--standard{
+    font-size: var(--font-size-standard);
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+}
+
+
+body{
+    /* background-color: green; */
+    /* background-color: var(--bg-color-primary); */
+    /* color: white; */
+    font-family:monospace;
+}
