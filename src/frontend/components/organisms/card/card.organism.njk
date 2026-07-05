@@ -61,7 +61,9 @@
         </div>
 
         {% if item.description %}
-            <p class="portfolio-description">{{ item.description }}</p>
+        {% for description in item.description %}
+            <p class="portfolio-description"  data-search-mark>{{ description }}</p>
+          {% endfor %}
         {% endif %}
 
         <dl class="portfolio-meta">
