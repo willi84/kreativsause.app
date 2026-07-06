@@ -57,42 +57,30 @@
             {% endif %}
         </div>
 
-        
+        {# description #}
         {% if item.description %}
-        {% for description in item.description %}
-              {% if loop.index < 3%}
-                <p class="portfolio-description"  data-search-mark>{{ description }}</p>
-              {% else %}
-                <p class="portfolio-description show-on-search"  data-search-mark>{{ description  }}</p>
+          {% for description in item.description %}
+                {% if loop.index < 3%}
+                  <p class="portfolio-description"  data-search-mark>{{ description }}</p>
+                {% else %}
+                  <p class="portfolio-description show-on-search"  data-search-mark>{{ description  }}</p>
                 {% endif %}
-                {% endfor %}
-                {% endif %}
-                
-                <div class="portfolio-badges">
-                        {# {{ component("badge", { text: item.status, css: statusClass }) }}
-                        {{ component("badge", { text: item.prize, css: "text-bg-success", prefix: "🏆" }) }} #}
-                        {% for tag in item.tags %}
+          {% endfor %}
+        {% endif %}
         
-                            {{ component("badge", { text: tag, css: "portfolio-muted-badge", config: config.tags  }) }}
-                        {% endfor %}
-                </div>
+        {# badges #}
+        <div class="portfolio-badges">
+          {% for tag in item.tags %}
+              {{ component("badge", { text: tag, css: "portfolio-muted-badge", config: config.tags  }) }}
+          {% endfor %}
+        </div>
         <dl class="portfolio-meta">
-          
-
-            {# {% for metaItem in params.meta %}
-                {% if metaItem.value %}
-                     {{ component("key_value", { key: metaItem.key, value: metaItem.value, flag: metaItem.country }) }}
-                {% elif metaItem.start or metaItem.end %}
-                     {{ component("key_value", { key: metaItem.key, start: metaItem.start, end: metaItem.end }) }}
-                {% endif %}
-            {% endfor %} #}
         </dl>
-
         <div class="portfolio-links">
             {% for link in params.links %}
-            {% set url = link.url or link.href %}
-                {% if link.url %}
-                    {{ component("link", { url: link.url, text: link.text, css: link.css, target: "_blank" }) }}
+            {% set url = link.url if link and link.url is defined else link.href %}
+                {% if url and url != ''%}
+                    {{ component("link", { url: url , text: '👉 register', css: link.css ~ ' btn btn-sm portfolio-link pd-1', target: "_blank" }) }}
                 {% endif %}
             {% endfor %}
         </div>
