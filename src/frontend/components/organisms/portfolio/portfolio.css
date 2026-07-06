@@ -603,7 +603,7 @@
 }
 
 .craft-cards-view {
-    display: block;
+    display: grid;
 }
 
 .craft-schedule-view {
@@ -703,6 +703,152 @@
     display: block;
 }
 
+.portfolio-shell[data-view="schedule"] .craft-inline-schedule {
+    display: grid;
+}
+
+.craft-inline-schedule {
+    display: none;
+    gap: .75rem;
+}
+
+.craft-inline-schedule-item {
+    border: 1px solid var(--pf-line);
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--pf-panel) 90%, transparent);
+    box-shadow: 0 .85rem 2rem rgba(0, 0, 0, .12);
+    overflow: hidden;
+    transition: opacity .18s ease, transform .18s ease, border-color .18s ease;
+}
+
+.craft-inline-schedule-item[open],
+.craft-inline-schedule-item:hover {
+    border-color: color-mix(in srgb, var(--pf-accent) 55%, var(--pf-line));
+}
+
+.craft-inline-schedule-item.is-past {
+    opacity: .58;
+}
+
+.craft-inline-schedule-item.is-active {
+    border-color: color-mix(in srgb, var(--pf-accent) 75%, var(--pf-line));
+    box-shadow: 0 1rem 2.4rem color-mix(in srgb, var(--pf-accent) 18%, transparent);
+}
+
+.craft-inline-schedule-item.is-canceled {
+    opacity: .7;
+}
+
+.craft-inline-schedule-summary {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 5.25rem 4rem minmax(0, 1fr) auto;
+    gap: .9rem;
+    align-items: center;
+    padding: .9rem 1rem;
+    cursor: pointer;
+}
+
+.craft-inline-schedule-summary::-webkit-details-marker {
+    display: none;
+}
+
+.craft-inline-schedule-time {
+    display: grid;
+    gap: .1rem;
+    text-align: left;
+}
+
+.craft-inline-schedule-time strong {
+    color: var(--pf-text);
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.craft-inline-schedule-time small {
+    color: var(--pf-muted);
+    font-size: .72rem;
+}
+
+.craft-inline-schedule-avatar img {
+    width: 3.5rem;
+    height: 3.5rem;
+    display: block;
+    object-fit: cover;
+    border-radius: 999px;
+    border: 1px solid var(--pf-line);
+}
+
+.craft-inline-schedule-copy {
+    display: grid;
+    gap: .2rem;
+    min-width: 0;
+}
+
+.craft-inline-schedule-title {
+    color: var(--pf-text);
+    font-size: .98rem;
+    font-weight: 800;
+    line-height: 1.25;
+}
+
+.craft-inline-schedule-speaker {
+    color: var(--pf-muted);
+    font-size: .82rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.craft-inline-schedule-status {
+    color: var(--pf-text);
+    border: 1px solid var(--pf-line);
+    border-radius: 999px;
+    padding: .3rem .7rem;
+    font-size: .72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    white-space: nowrap;
+}
+
+.craft-inline-schedule-item[data-talk-status="upcoming"] .craft-inline-schedule-status {
+    background: color-mix(in srgb, var(--pf-card-2) 80%, transparent);
+}
+
+.craft-inline-schedule-item[data-talk-status="active"] .craft-inline-schedule-status {
+    color: var(--pf-bg);
+    background: var(--pf-accent);
+    border-color: var(--pf-accent);
+}
+
+.craft-inline-schedule-item[data-talk-status="past"] .craft-inline-schedule-status {
+    color: var(--pf-muted);
+}
+
+.craft-inline-schedule-item[data-talk-status="canceled"] .craft-inline-schedule-status {
+    color: #fff;
+    background: #a94442;
+    border-color: #a94442;
+}
+
+.craft-inline-schedule-details {
+    display: grid;
+    gap: .75rem;
+    padding: 0 1rem 1rem 10.15rem;
+}
+
+.craft-inline-schedule-meta {
+    color: var(--pf-muted);
+    margin: 0;
+    font-size: .8rem;
+}
+
+.craft-inline-schedule-description {
+    display: grid;
+    gap: .45rem;
+}
+
 @media (min-width: 992px) {
     .craft-map-panel {
         align-items: stretch;
@@ -742,6 +888,19 @@
 
     .craft-schedule-time {
         position: static;
+    }
+
+    .craft-inline-schedule-summary {
+        grid-template-columns: 1fr;
+        align-items: start;
+    }
+
+    .craft-inline-schedule-details {
+        padding: 0 1rem 1rem;
+    }
+
+    .craft-inline-schedule-speaker {
+        white-space: normal;
     }
 }
 

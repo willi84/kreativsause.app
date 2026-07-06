@@ -42,7 +42,7 @@ menu:
                 title: "Kreativsause.app",
                 subtitle: "Ein kleiner Helfer für die Kreativsause 2026",
                 state: "in Arbeit",
-                views: [{ key: 'cards', label: '▦ Cards'}, { key: 'list', label: '☰ Liste' }]
+                views: [{ key: 'cards', label: '▦ Cards'}, { key: 'list', label: '☰ Liste' }, { key: 'schedule', label: '🕒 Schedule' }]
             })
         }}
         <section search-context>
@@ -102,7 +102,7 @@ menu:
                 <h2 class="h4 mb-0">{{ categoryLabels[day] | default(day) }}</h2>
                 <span class="portfolio-count"><span data-count>0</span> items</span>
             </div>
-            <div class="portfolio-grid">
+            <div class="portfolio-grid craft-cards-view">
                 {% for key, item in items %}
                     {% if item.days | contains(day) %}
                         {% set statusClass = statusClasses[item.status] | default('text-bg-secondary') %}
@@ -118,6 +118,68 @@ menu:
                         {% set links = item.links | default([]) %}
 
                         {{ component("card", { item: item, category: day, meta: metaData, links: links, config: workshops.meta })}}
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="craft-schedule-view craft-inline-schedule">
+                {% for key, item in items %}
+                    {% if item.days | contains(day) %}
+                        {% set speakerNames = item.speakers | join(', ') if item.speakers else item.title %}
+                        {% set speakerImage = item.speaker_image if item.speaker_image else '/assets/unknown.svg' %}
+                        <details
+                            class="craft-inline-schedule-item"
+                            data-search-item
+                            data-search-mirror="1"
+                            data-schedule-item
+                            data-category="{{ item.tags }}"
+                            data-search="{{ item | getSearchValue(day) }}"
+                            data-start="{{ item.start }}"
+                            data-end="{{ item.end }}"
+                            data-canceled="{% if item.canceled %}1{% else %}0{% endif %}">
+                            <summary class="craft-inline-schedule-summary">
+                                <span class="craft-inline-schedule-time">
+                                    <strong>{{ item.start | formatDate('time') }}</strong>
+                                    <small>{{ item.end | formatDate('time') }}</small>
+                                </span>
+                                <span class="craft-inline-schedule-avatar" aria-hidden="true">
+                                    <img
+                                        src="{{ speakerImage }}"
+                                        alt="Speaker photo of {{ speakerNames }}"
+                                        width="56"
+                                        height="56"
+                                        loading="lazy">
+                                </span>
+                                <span class="craft-inline-schedule-copy">
+                                    <span class="craft-inline-schedule-title" data-search-mark>{{ item.title }}</span>
+                                    <span class="craft-inline-schedule-speaker" data-search-mark>{{ speakerNames }}</span>
+                                </span>
+                                <span class="craft-inline-schedule-status" data-talk-status-label>Status</span>
+                            </summary>
+
+                            <div class="craft-inline-schedule-details" data-talk-status>
+                                <p class="craft-inline-schedule-meta">{{ item.start | formatDate('date') }} · {{ item.start | formatDate('time') }} - {{ item.end | formatDate('time') }}</p>
+                                {% if item.description %}
+                                    <div class="craft-inline-schedule-description">
+                                        {% for description in item.description %}
+                                            {% if loop.index < 3 %}
+                                                <p class="portfolio-description" data-search-mark>{{ description }}</p>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="portfolio-badges">
+                                    {% for tag in item.tags %}
+                                        {{ component("badge", { text: tag, css: "portfolio-muted-badge", config: workshops.meta.tags }) }}
+                                    {% endfor %}
+                                </div>
+                                {% if item.register and item.register != '' %}
+                                    <div class="portfolio-links">
+                                        {{ component("link", { url: item.register, text: '👉 register', css: 'btn btn-sm portfolio-link pd-1', target: '_blank' }) }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </details>
                     {% endif %}
                 {% endfor %}
             </div>

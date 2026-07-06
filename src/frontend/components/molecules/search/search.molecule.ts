@@ -94,8 +94,9 @@ export const setupSearch = (): void => {
                 const matchesSearch = haystack.includes(query);
                 const matchesCategory = activeCategory === DEFAULT_CATEGORY || categories.includes(activeCategory);
                 const isVisible = matchesSearch && matchesCategory;
+                const isMirror = card.dataset.searchMirror === '1';
 
-                if (matchesSearch) {
+                if (!isMirror && matchesSearch) {
                     counts.set(DEFAULT_CATEGORY, (counts.get(DEFAULT_CATEGORY) || 0) + 1);
                     categories.forEach((category) => {
                         counts.set(category, (counts.get(category) || 0) + 1);
@@ -103,7 +104,7 @@ export const setupSearch = (): void => {
                 }
 
                 card.classList.toggle('d-none', !isVisible);
-                visibleCount += isVisible ? 1 : 0;
+                visibleCount += !isMirror && isVisible ? 1 : 0;
                 updateHighlights(card, query);
             });
 
@@ -112,7 +113,7 @@ export const setupSearch = (): void => {
 
             sections.forEach((section) => {
                 const countElement = section.querySelector<HTMLElement>('[data-count]');
-                const num = section.querySelectorAll('[data-search-item]:not(.d-none)').length;
+                const num = section.querySelectorAll('[data-search-item]:not([data-search-mirror="1"]):not(.d-none)').length;
                 const hasNoVisibleItems = num === 0;
 
                 section.classList.toggle('d-none', hasNoVisibleItems);

@@ -48,6 +48,8 @@ type PortfolioUiState = {
     view?: string,
 };
 
+type TalkState = 'upcoming' | 'active' | 'past' | 'canceled';
+
 type RouteRenderEntry = {
     entry: RouteEntry,
     routeId: string,
@@ -82,6 +84,37 @@ const parseEventDate = (value = ''): Date | null => {
 
     const parsed = new Date(value);
     return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
+const TALK_STATE_LABELS: Record<TalkState, string> = {
+    upcoming: 'Upcoming',
+    active: 'Live',
+    past: 'Past',
+    canceled: 'Canceled',
+};
+
+const getTalkState = (startValue = '', endValue = '', canceledValue = ''): TalkState => {
+    if (['1', 'true', 'yes'].includes(canceledValue.toLowerCase())) {
+        return 'canceled';
+    }
+
+    const start = parseEventDate(startValue);
+    const end = parseEventDate(endValue);
+    if (!start || !end) {
+        return 'upcoming';
+    }
+
+    // API timestamps are absolute instants, so comparing them to now keeps the Europe/Berlin schedule state correct.
+    const now = new Date();
+    if (now.getTime() < start.getTime()) {
+        return 'upcoming';
+    }
+
+    if (now.getTime() <= end.getTime()) {
+        return 'active';
+    }
+
+    return 'past';
 };
 
 export const changeDocumentAttribute = (key: string, value: string, defaultValue: string) => {
@@ -506,6 +539,7 @@ const applyCraftExperience = (root: HTMLElement, filterButtons: HTMLButtonElemen
     const searchResultsPanel = getElement(root, '[data-craft-search-results]'); // TODO
     const searchResultItems = getElements(root, '[data-craft-result-item]');
     const searchResultsCount = getElement(root, '[data-craft-results-count]');
+    const talkStatusItems = getElements(root, '[data-talk-status]');
     const jumpLinks = getElements<HTMLAnchorElement>(root, '[data-talk-jump]');
     const planButtons = getElements<HTMLButtonElement>(root, '[data-plan-toggle]');
 
@@ -1341,6 +1375,24 @@ const applyCraftExperience = (root: HTMLElement, filterButtons: HTMLButtonElemen
         });
     };
 
+    const updateTalkStatuses = () => {
+        talkStatusItems.forEach((item) => {
+            const state = getTalkState(item.dataset.start || '', item.dataset.end || '', item.dataset.canceled || '');
+            const label = item.parentElement?.querySelector<HTMLElement>('[data-talk-status-label]');
+
+            item.dataset.talkStatus = state;
+            item.parentElement?.setAttribute('data-talk-status', state);
+            item.parentElement?.classList.toggle('is-past', state === 'past');
+            item.parentElement?.classList.toggle('is-active', state === 'active');
+            item.parentElement?.classList.toggle('is-upcoming', state === 'upcoming');
+            item.parentElement?.classList.toggle('is-canceled', state === 'canceled');
+
+            if (label) {
+                label.textContent = TALK_STATE_LABELS[state];
+            }
+        });
+    };
+
     const updateSearchResults = () => {
         if (!searchInput || !searchResultsPanel) {
             return;
@@ -1376,6 +1428,7 @@ const applyCraftExperience = (root: HTMLElement, filterButtons: HTMLButtonElemen
 
     const refreshCraftUi = () => {
         syncPlanPanelHeight();
+        updateTalkStatuses();
         updateSearchResults();
         updateMapBubbles();
         applyMapHighlight();
@@ -1648,6 +1701,8 @@ const applyCraftExperience = (root: HTMLElement, filterButtons: HTMLButtonElemen
         observer.observe(mapRoot);
     }
     syncCurrentStage();
+    updateTalkStatuses();
+    window.setInterval(updateTalkStatuses, 60000);
     renderPlan();
 };
 
