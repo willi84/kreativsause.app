@@ -114,6 +114,10 @@ const getStageIds = (value = ''): string[] => value
     .filter(Boolean);
 
 const getTimeOrderValue = (day = '', startTime = ''): string => day + ' ' + startTime;
+const parseDatasetList = (value = ''): string[] => value
+    .split(',')
+    .map((part) => part.trim().replace(/^[\["'\s]+|[\]"'\s]+$/g, '').toLowerCase())
+    .filter(Boolean);
 
 const PLAN_SLOT_PARTS: Omit<PlanSlot, 'day'>[] = [
     { label: 'Morning', emoji: '🌅', startMinutes: 8 * 60, endMinutes: 11 * 60 + 59 },
@@ -533,6 +537,9 @@ const applyCraftExperience = (root: HTMLElement, filterButtons: HTMLButtonElemen
     let hoveredRouteId = '';
     const getCurrentView = (): string => root.dataset.view || 'cards';
     const usesInlineSearchResults = (): boolean => ['schedule', 'agenda'].includes(getCurrentView());
+    const getItemCategories = (item: HTMLElement): string[] => parseDatasetList(item.dataset.category || '');
+    const itemMatchesCategory = (item: HTMLElement, category: string): boolean => category === 'all'
+        || getItemCategories(item).includes(category.toLowerCase());
 
     const applyRouteHighlight = () => {
         routeElementMap.forEach((elements, routeId) => {
@@ -1234,7 +1241,7 @@ const applyCraftExperience = (root: HTMLElement, filterButtons: HTMLButtonElemen
         let visibleCount = 0;
 
         scheduleItems.forEach((item) => {
-            const matchesCategory = currentCategory === 'all' || item.dataset.category === currentCategory;
+            const matchesCategory = itemMatchesCategory(item, currentCategory);
             const matchesSearch = !query || (item.dataset.search || '').includes(query);
             const isVisible = matchesCategory && matchesSearch;
 
@@ -1245,6 +1252,36 @@ const applyCraftExperience = (root: HTMLElement, filterButtons: HTMLButtonElemen
         scheduleDays.forEach((day) => {
             const visibleItems = day.querySelectorAll('[data-schedule-item]:not(.d-none)').length;
             day.classList.toggle('d-none', visibleItems === 0);
+            const countElement = day.querySelector<HTMLElement>('[data-count]');
+            if (countElement) {
+                countElement.textContent = String(visibleItems);
+            }
+        });
+
+        const filterCounts = new Map<string, number>();
+        scheduleItems.forEach((item) => {
+            const matchesSearch = !query || (item.dataset.search || '').includes(query);
+            if (!matchesSearch) {
+                return;
+            }
+
+            filterCounts.set('all', (filterCounts.get('all') || 0) + 1);
+            getItemCategories(item).forEach((category) => {
+                filterCounts.set(category, (filterCounts.get(category) || 0) + 1);
+            });
+        });
+
+        filterButtons.forEach((button) => {
+            const key = (button.dataset.filterButton || 'all').toLowerCase();
+            const count = filterCounts.get(key) || 0;
+            const countElement = button.querySelector<HTMLElement>('[data-count]');
+            if (countElement) {
+                countElement.textContent = String(count);
+            }
+
+            const isInactive = key !== 'all' && count === 0;
+            button.classList.toggle('inactive', isInactive);
+            button.setAttribute('aria-disabled', isInactive ? 'true' : 'false');
         });
 
         if (empty) {
@@ -1314,7 +1351,7 @@ const applyCraftExperience = (root: HTMLElement, filterButtons: HTMLButtonElemen
         let visibleCount = 0;
 
         searchResultItems.forEach((item) => {
-            const matchesCategory = currentCategory === 'all' || item.dataset.category === currentCategory;
+            const matchesCategory = itemMatchesCategory(item, currentCategory);
             const matchesSearch = !query || (item.dataset.search || '').includes(query);
             const isVisible = hasQuery && matchesCategory && matchesSearch;
 
