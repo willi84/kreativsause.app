@@ -57,15 +57,41 @@
             {% endif %}
         </div>
 
+        <div class="portfolio-speaker-summary">
+            <div class="portfolio-speaker-list">
+                {% for speaker in item.speakers %}
+                    {% set speakerProfile = craft.data.speakers[speaker.slug] | default({}) %}
+                    {% set speakerImage = item.speaker_image if item.speaker_image else '/assets/unknown.svg' %}
+                    {% set speakerName = speaker.name if speaker.name else speaker %}
+                    {% set speakerLabel = speakerName | truncate(50, true, '...') %}
+                    {# {% set speakerImage = 'https://craft-conf.com' + speakerProfile.image if speakerProfile.image else '' %} #}
+                    <figure class="craft-speaker-avatar" title="{{ speakerName }}">
+                        {% if speakerImage %}
+                            <img
+                                class="craft-speaker-image"
+                                src="{{ speakerImage }}"
+                                alt="Speaker photo of {{ speakerName }}"
+                                width="48"
+                                height="48"
+                                loading="lazy">
+                        {% else %}
+                            <span class="craft-speaker-placeholder" aria-hidden="true">{{ speakerName | first | upper }}</span>
+                        {% endif %}
+                        <figcaption>{{ speakerLabel }}</figcaption>
+                    </figure>
+                {% endfor %}
+            </div>
+        </div>
+
         {# description #}
         {% if item.description %}
-          {% for description in item.description %}
-                {% if loop.index < 3%}
-                  <p class="portfolio-description"  data-search-mark>{{ description }}</p>
+            {% for description in item.description %}
+                {% if loop.index < 3 %}
+                    <p class="portfolio-description" data-search-mark>{{ description }}</p>
                 {% else %}
-                  <p class="portfolio-description show-on-search"  data-search-mark>{{ description  }}</p>
+                    <p class="portfolio-description show-on-search" data-search-mark>{{ description }}</p>
                 {% endif %}
-          {% endfor %}
+            {% endfor %}
         {% endif %}
         
         {# badges #}
@@ -77,12 +103,17 @@
         <dl class="portfolio-meta">
         </dl>
         <div class="portfolio-links">
+              {% if item.register and item.register != ''%}
+                  {{ component("link", { url: item.register , text: '👉 register', css: 'btn btn-sm portfolio-link pd-1', target: "_blank" }) }}
+              {% endif %}
+        </div>
+        {# <div class="portfolio-links">
             {% for link in params.links %}
             {% set url = link.url if link and link.url is defined else link.href %}
                 {% if url and url != ''%}
                     {{ component("link", { url: url , text: '👉 register', css: link.css ~ ' btn btn-sm portfolio-link pd-1', target: "_blank" }) }}
                 {% endif %}
             {% endfor %}
-        </div>
+        </div> #}
     </div>
 </article>

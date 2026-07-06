@@ -269,17 +269,17 @@
 
     .craft-speaker-avatar {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        gap: .35rem;
+        gap: .6rem;
         margin: 0;
-        width: 5.25rem;
+        min-width: 0;
+        max-width: 100%;
     }
 
     .craft-speaker-image,
     .craft-speaker-placeholder {
-        width: 4.5rem;
-        height: 4.5rem;
+        /* width: 4.5rem;
+        height: 4.5rem; */
         border-radius: 999px;
         border: 1px solid var(--pf-line);
         background: var(--pf-card);
@@ -300,10 +300,23 @@
 
     .craft-speaker-avatar figcaption {
         color: var(--pf-muted);
-        font-size: .63rem;
-        line-height: 1.2;
-        text-align: center;
-        overflow-wrap: anywhere;
+        font-size: .75rem;
+        line-height: 1.3;
+        text-align: left;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 100%;
+    }
+
+    .portfolio-speaker-summary {
+        min-width: 0;
+    }
+
+    .portfolio-speaker-list {
+        display: grid;
+        gap: .75rem;
+        min-width: 0;
     }
 
     .portfolio-shell[data-view="list"] .craft-speakers-visual {
