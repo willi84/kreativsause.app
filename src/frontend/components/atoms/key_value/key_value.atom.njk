@@ -28,15 +28,22 @@
             {% if params.value is defined %}
                 {{ params.value }}
             {% endif %}
-            {% if params.start is defined %}
-                {{ params.start }}
-            {% endif %}
-             {% if params.start and params.end and params.end != "" %}
--
-             {% endif %}
-            {% if params.end is defined %}
-                {{ params.end }}
+            {% if params.start and params.end and params.end != "" %}
+                 {{ params.start | formatDate('time')  }} - 
+                 {{ params.end | formatDate('time')  }}
+            {% else %}
+                {% if params.start is defined %}
+                    {% if key == date %}
+                      {{ params.start | formatDate  }}
+                    {% else %}
+                      {{ params.start }}
+                    {% endif %}
+
                 {% endif %}
-            </dd>
+                {% if params.end is defined %}
+                    {{ params.end }}
+                    {% endif %}
+                </dd>
+            {% endif %}
     </div>
 {% endif %}

@@ -7,3 +7,9 @@ mark{
 .search--highlight{
     color: var(--pf-accent);
 }
+.show-on-search{
+  display: none;
+}
+.show-on-search.has-search-highlight{
+  display: block;
+}

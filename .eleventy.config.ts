@@ -8,6 +8,7 @@ const { EleventyRenderPlugin } = require("@11ty/eleventy");
 import { filterUpcomingEvents } from './src/setup/filters/upcomingEvents/upcomingEvents.ts';
 import { getSearchValueFilter } from './src/setup/filters/getSearchValue/getSearchValue.filter.ts';
 import { getFullDate } from './src/setup/filters/getFullDate/getFullDate.filter.ts';
+import { formatDateFilter } from './src/setup/filters/formatDate/formatDate.ts';
 // console.log(config)
 
 // .eleventy.config.ts
@@ -29,6 +30,8 @@ import { safeParam } from './src/setup/filters/safeParam.filter.js';
 import { safeParamIf } from './src/setup/filters/safeParamIf.filter.js';
 import { isUpcoming } from './src/setup/filters/isUpcoming.filter.js';
 import { flagFilter } from './src/setup/filters/flag.filter.js';
+import { getColorFilter } from './src/setup/filters/getColor/getColor.filter.ts';
+import { getKeysFilter } from './src/setup/filters/getKeys/getKeys.ts';
 
 // shortcodes (JS)
 import {
@@ -105,6 +108,9 @@ eleventyConfig.on('eleventy.after', async () => {
     eleventyConfig.addNunjucksFilter('getUpcomingEvents', filterUpcomingEvents);
     eleventyConfig.addNunjucksFilter('getSearchValue', getSearchValueFilter);
     eleventyConfig.addNunjucksFilter('getFullDate', getFullDate);
+    eleventyConfig.addNunjucksFilter('formatDate', formatDateFilter);
+    eleventyConfig.addNunjucksFilter('getColor', getColorFilter);
+    eleventyConfig.addNunjucksFilter('getKeys', getKeysFilter);
     // vite shortcodes
     eleventyConfig.addNunjucksAsyncShortcode('viteScriptTag', viteScriptTag);
     eleventyConfig.addNunjucksAsyncShortcode('viteLegacyScriptTag', viteLegacyScriptTag);

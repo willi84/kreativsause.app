@@ -1,11 +1,12 @@
 {% set item  = params.item %}
 {% set category  = params.category %}
 {% set statusClass = statusClasses[item.status] | default('text-bg-secondary') %}
+{% set config = params.config | default({}) %}
 
 <article
     class="portfolio-item{% if item.pinned %} is-pinned{% endif %}"
     data-search-item 
-    data-category="{{ item.category }}"
+    data-category="{{ item.tags }}"
     data-search="{{ item | getSearchValue(category) }}"
     data-title="{{ item.title | lower }}"
     data-status="{{ item.status | lower }}"
@@ -46,7 +47,9 @@
     <div class="portfolio-content">
         <div class="portfolio-item-top">
             <div class="min-w-0">
-                <p class="portfolio-path mb-1"  data-search-mark>{{ category }}/{{ item.name | lower | replace(' ', '-') }}</p>
+
+              {% set timeString = item.start | formatDate('time') ~ ' - ' ~ item.end | formatDate('time') %}
+                <p class="portfolio-path mb-1"  data-search-mark>{{item.start | formatDate('date')}} / {{ timeString }}</p>
                 <h3 class="portfolio-item-title mb-0"  data-search-mark>{{ item.title }}</h3>
             </div>
             {% if item.pinned == "TRUE" %}
@@ -54,26 +57,35 @@
             {% endif %}
         </div>
 
-        <div class="portfolio-badges">
-                {{ component("badge", { text: item.status, css: statusClass }) }}
-                {{ component("badge", { text: item.prize, css: "text-bg-success", prefix: "🏆" }) }}
-                {{ component("badge", { text: item.tags, css: "portfolio-muted-badge" }) }}
-        </div>
-
+        
         {% if item.description %}
         {% for description in item.description %}
-            <p class="portfolio-description"  data-search-mark>{{ description }}</p>
-          {% endfor %}
-        {% endif %}
-
+              {% if loop.index < 3%}
+                <p class="portfolio-description"  data-search-mark>{{ description }}</p>
+              {% else %}
+                <p class="portfolio-description show-on-search"  data-search-mark>{{ description  }}</p>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+                
+                <div class="portfolio-badges">
+                        {# {{ component("badge", { text: item.status, css: statusClass }) }}
+                        {{ component("badge", { text: item.prize, css: "text-bg-success", prefix: "🏆" }) }} #}
+                        {% for tag in item.tags %}
+        
+                            {{ component("badge", { text: tag, css: "portfolio-muted-badge", config: config.tags  }) }}
+                        {% endfor %}
+                </div>
         <dl class="portfolio-meta">
-            {% for metaItem in params.meta %}
+          
+
+            {# {% for metaItem in params.meta %}
                 {% if metaItem.value %}
                      {{ component("key_value", { key: metaItem.key, value: metaItem.value, flag: metaItem.country }) }}
                 {% elif metaItem.start or metaItem.end %}
                      {{ component("key_value", { key: metaItem.key, start: metaItem.start, end: metaItem.end }) }}
                 {% endif %}
-            {% endfor %}
+            {% endfor %} #}
         </dl>
 
         <div class="portfolio-links">

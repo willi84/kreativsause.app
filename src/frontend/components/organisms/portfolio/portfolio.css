@@ -1263,3 +1263,31 @@
         text-align: left;
     }
 }
+
+.portfolio-description--excerpt {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+    min-height: 4.9rem;
+}
+
+.talks-shell .portfolio-grid {
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+
+.craft-talk-card .portfolio-visual a,
+.craft-talk-card-linkless {
+    display: block;
+    aspect-ratio: 4 / 5;
+}
+
+.craft-talk-image {
+    object-position: center;
+}
+
+.craft-talk-speakers {
+    color: var(--pf-muted);
+    font-size: .82rem;
+    line-height: 1.45;
+}

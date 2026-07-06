@@ -15,7 +15,8 @@ menu:
 {% set DATA = workshops %}
 {% set items = workshops.workshops %}
 
-{% set categories = ['montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag', 'samstag', 'sonntag'] %}
+{% set categories = workshops.meta.tags | getKeys | default([]) %}
+{# {% set categories = ['montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag', 'samstag', 'sonntag'] %} #}
 {# {% set categories = all.categories | default(['workshops']) %} #}
 {% set statusClasses = all.configuration.status | default({}) %}
 {% set eventCategories = ['hackathons', 'conferences', 'workshops'] %}
@@ -84,8 +85,9 @@ menu:
                                 key: category,
                                 label: categoryLabels[category] | default(category),
                                 css: 'mb-2',
-                                length: DATA[category] | length
-                            })
+                                length: workshops.meta.tags[category],
+                                config: workshops.meta.tags                          
+                              })
                         }}
                     {% endfor %}
                 </div>
@@ -94,20 +96,20 @@ menu:
     </nav>
     
 
-    {% for category in categories %}
+    {# {% for category in categories %} #}
         <section class="portfolio-category mb-5" data-category-section="{{ category }}">
-            <div class="portfolio-category-head d-flex align-items-end justify-content-between gap-3 mb-3">
+            {# <div class="portfolio-category-head d-flex align-items-end justify-content-between gap-3 mb-3">
                 <div>
                     <h2 class="h4 mb-0">{{ categoryLabels[category] | default(category) }}</h2>
                 </div>
                 <span class="portfolio-count"><span data-count>{{ DATA[category] | length }}</span> items</span>
-            </div>
+            </div> #}
 
             <div class="portfolio-grid">
                 {% for key, item in items %}
-                {% if item.days | contains(category) %}
+                {# {% if item.days | contains(category) %} #}
                     {% set statusClass = statusClasses[item.status] | default('text-bg-secondary') %}
-                    {% set meta = [
+                    {% set metaData = [
                         { key: "date", start: item.start, end: item.end },
                         { key: "project", value: item.project },
                         { key: "role", value: item.role },
@@ -118,13 +120,13 @@ menu:
                     {% set css_link = "btn btn-sm portfolio-link" %}
                     {% set links = item.links | default([]) %}
 
-                        {{ component("card", { item: item, category: category, meta: meta, links: links})}}
+                        {{ component("card", { item: item, category: category, meta: metaData, links: links, config: workshops.meta })}}
                     
-                {% endif %}
+                {# {% endif %} #}
                 {% endfor %}
             </div>
         </section>
-    {% endfor %}
+    {# {% endfor %} #}
 
     <p class="portfolio-empty d-none" data-search-empty>Keine passenden Einträge gefunden.</p>
 </section>

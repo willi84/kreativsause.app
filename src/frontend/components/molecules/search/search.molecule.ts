@@ -30,8 +30,10 @@ const updateProjectVisibility = (cards: HTMLElement[], query: string): number =>
                     if(lowerText.includes(query) && query !== '') {
                         const regex = new RegExp(`(${query})`, 'gi');
                         mark.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
+                        mark.classList.add('has-search-highlight');
                     } else {
                         mark.innerHTML = originalText;
+                        mark.classList.remove('has-search-highlight');
                     }
                 }
             }

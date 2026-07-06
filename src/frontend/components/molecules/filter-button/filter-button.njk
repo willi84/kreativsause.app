@@ -1,3 +1,9 @@
-<button class="btn btn-sm portfolio-filter {{ params.css }}" type="button" data-filter-button="{{ params.key }}">
+{% set config = params.config or {} %}
+<button 
+class="btn btn-sm portfolio-filter {{ params.css }}" 
+type="button" data-filter-button="{{ params.key }}"
+style="color: white; background-color: {{params.key | getColor(config)}}"
+
+>
     {{ params.label }} <span data-count>{{ params.length }}</span>
 </button>

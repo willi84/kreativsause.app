@@ -15,5 +15,6 @@ describe('✅ getSearchValueFilter()', () => {
             "tags": "conference, event",
         }
         expect(FN(ITEM, 'projects')).toEqual(' craft active hu this is my project description conference event projects');
+        expect(FN(undefined, 'projects')).toEqual('');
     });
 });

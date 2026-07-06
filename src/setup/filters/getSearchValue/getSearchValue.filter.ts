@@ -1,4 +1,7 @@
 export const getSearchValueFilter = (item: any, category: string): string => {
+    if(!item ){
+        return '';
+    }
     const keys = Object.keys(item);
     let result = '';
     const FORBIDDEN = ['true', 'false', 'undefined'];
@@ -8,7 +11,7 @@ export const getSearchValueFilter = (item: any, category: string): string => {
             continue; // skip empty values
         }
         if(typeof value === 'string'){
-            const strValue = value.toLowerCase().trim();
+            const strValue = value?.toLowerCase().trim();
             if(strValue.indexOf('http') !== -1){
                 continue; // skip urls
             } else if(FORBIDDEN.includes(strValue)){
@@ -24,5 +27,5 @@ export const getSearchValueFilter = (item: any, category: string): string => {
             }
         }
     }
-    return result + ' ' + category.toLowerCase();
+    return result + ' ' +  (category ? category.toLowerCase() : '');
 }

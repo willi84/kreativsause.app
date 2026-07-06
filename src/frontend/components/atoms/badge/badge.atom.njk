@@ -12,11 +12,12 @@
 {% set text = params.text %}
 {% set css = params.css or "" %}
 {% set prefix = params.prefix %}
+{% set config = params.config | default({}) %}
 
 
 {# TEMPLATE #}
 {% if text %}
-    <span  data-search-mark class="badge {{css}}" data-component="image.atom">
+    <span  data-search-mark class="badge rounded-pill {{css}}" data-component="image.atom" style="color: white; background-color: {{text | getColor(config)}}">
         {% if prefix is defined %}{{prefix}} {% endif %}
         {{ text }}
     </span>
