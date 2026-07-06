@@ -132,6 +132,11 @@ menu:
                             data-search-item
                             data-search-mirror="1"
                             data-schedule-item
+                            data-talk-item
+                            data-talk-id="{{ item.id }}"
+                            data-talk-title="{{ item.title }}"
+                                                                                                    data-stage-label="{{ item.venue[0] | default(item.title) }}"
+                            data-stage-svg-ids=""
                             data-category="{{ item.tags }}"
                             data-search="{{ item | getSearchValue(day) }}"
                             data-start="{{ item.start }}"
@@ -173,11 +178,19 @@ menu:
                                         {{ component("badge", { text: tag, css: "portfolio-muted-badge", config: workshops.meta.tags }) }}
                                     {% endfor %}
                                 </div>
-                                {% if item.register and item.register != '' %}
-                                    <div class="portfolio-links">
+                                <div class="portfolio-links">
+                                    <button
+                                        class="btn btn-sm portfolio-link craft-plan-toggle"
+                                        type="button"
+                                        data-plan-toggle
+                                        data-talk-id="{{ item.id }}"
+                                        aria-pressed="false">
+                                        💾 Merken
+                                    </button>
+                                    {% if item.register and item.register != '' %}
                                         {{ component("link", { url: item.register, text: '👉 register', css: 'btn btn-sm portfolio-link pd-1', target: '_blank' }) }}
-                                    </div>
-                                {% endif %}
+                                    {% endif %}
+                                </div>
                             </div>
                         </details>
                     {% endif %}

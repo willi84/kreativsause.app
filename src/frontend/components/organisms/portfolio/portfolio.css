@@ -227,6 +227,9 @@
         .portfolio-toolbar { padding: .85rem; }
         .portfolio-logo { width: 3.25rem; height: 3.25rem; border-radius: .8rem; }
         .portfolio-logo img { max-width: 2.2rem; max-height: 2.2rem; }
+        .portfolio-filter-scroll { gap: .35rem !important; }
+        .portfolio-filter { padding: .22rem .55rem; font-size: .74rem; }
+        .portfolio-filter span { font-size: .68rem; }
         .portfolio-shell[data-view="list"] .portfolio-item { flex-direction: column; }
         .portfolio-shell[data-view="list"] .portfolio-visual { width: 100%; border-right: 0; border-bottom: 1px solid var(--pf-line); }
         .portfolio-shell[data-view="list"] .portfolio-meta { grid-template-columns: 1fr; }
@@ -893,10 +896,34 @@
     .craft-inline-schedule-summary {
         grid-template-columns: 1fr;
         align-items: start;
+        gap: .55rem;
+        padding: .7rem .8rem;
+    }
+
+    .craft-inline-schedule-time strong {
+        font-size: .92rem;
+    }
+
+    .craft-inline-schedule-time small,
+    .craft-inline-schedule-speaker,
+    .craft-inline-schedule-status,
+    .craft-inline-schedule-meta,
+    .portfolio-description {
+        font-size: .74rem;
+    }
+
+    .craft-inline-schedule-avatar img {
+        width: 2.8rem;
+        height: 2.8rem;
+    }
+
+    .craft-inline-schedule-title {
+        font-size: .9rem;
     }
 
     .craft-inline-schedule-details {
-        padding: 0 1rem 1rem;
+        gap: .55rem;
+        padding: 0 .8rem .8rem;
     }
 
     .craft-inline-schedule-speaker {
@@ -1393,12 +1420,14 @@
 .craft-plan-toggle.is-active,
 .portfolio-item.is-saved,
 .craft-schedule-talk.is-saved,
+.craft-inline-schedule-item.is-saved,
 .craft-agenda-item.is-saved {
     border-color: color-mix(in srgb, #22c55e 62%, var(--pf-line));
 }
 
 .portfolio-item.is-saved,
 .craft-schedule-talk.is-saved,
+.craft-inline-schedule-item.is-saved,
 .craft-agenda-item.is-saved {
     background: linear-gradient(135deg, rgba(34, 197, 94, .12), rgba(59, 130, 246, .06) 42%, transparent 100%), color-mix(in srgb, var(--pf-panel) 90%, transparent);
     box-shadow: 0 .85rem 2rem rgba(34, 197, 94, .12);

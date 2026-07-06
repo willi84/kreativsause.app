@@ -227,13 +227,21 @@ const getTalkData = (element: HTMLElement): PlanTalk | null => {
         return null;
     }
 
+    const startValue = element.dataset.start || '';
+    const endValue = element.dataset.end || '';
+    const startDate = startValue ? new Date(startValue) : null;
+    const endDate = endValue ? new Date(endValue) : null;
+    const fallbackDay = startDate && !Number.isNaN(startDate.getTime()) ? startValue.slice(0, 10) : '';
+    const fallbackStartTime = startDate && !Number.isNaN(startDate.getTime()) ? startValue.slice(11, 16) : '';
+    const fallbackEndTime = endDate && !Number.isNaN(endDate.getTime()) ? endValue.slice(11, 16) : fallbackStartTime;
+
     return {
         id: talkId,
         title: element.dataset.talkTitle || '',
-        day: element.dataset.day || '',
-        startTime: element.dataset.startTime || '',
-        endTime: element.dataset.endTime || '',
-        stageLabel: element.dataset.stageLabel || '',
+        day: element.dataset.day || fallbackDay,
+        startTime: element.dataset.startTime || fallbackStartTime,
+        endTime: element.dataset.endTime || fallbackEndTime,
+        stageLabel: element.dataset.stageLabel || element.dataset.talkTitle || '',
         stageSvgIds: getStageIds(element.dataset.stageSvgIds || ''),
     };
 };
@@ -1235,7 +1243,7 @@ const applyCraftExperience = (root: HTMLElement, filterButtons: HTMLButtonElemen
             const isSaved = savedTalkIds.includes(talkId);
             buttons.forEach((button) => {
                 button.classList.toggle('is-active', isSaved);
-                button.textContent = isSaved ? '✅ Saved' : '💾 Save';
+                button.textContent = isSaved ? '✅ Gemerkt' : '💾 Merken';
                 button.setAttribute('aria-pressed', isSaved ? 'true' : 'false');
             });
         });
