@@ -82,7 +82,9 @@ const parseEventDate = (value = ''): Date | null => {
         return new Date(Number(year), Number(month) - 1, Number(day), 23, 59, 59, 999);
     }
 
-    const parsed = new Date(value);
+    const normalized = value.replace(/\.000Z$/, '');
+const parsed = new Date(normalized);
+    // const parsed = new Date(value);
     return Number.isNaN(parsed.getTime()) ? null : parsed;
 };
 
