@@ -745,9 +745,7 @@
 .craft-inline-schedule-summary {
     list-style: none;
     display: grid;
-    grid-template-columns: 5.25rem 4rem minmax(0, 1fr) auto;
-    gap: .9rem;
-    align-items: center;
+    gap: .8rem;
     padding: .9rem 1rem;
     cursor: pointer;
 }
@@ -756,10 +754,68 @@
     display: none;
 }
 
-.craft-inline-schedule-time {
+.craft-inline-schedule-topline {
     display: grid;
-    gap: .1rem;
-    text-align: left;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: .75rem;
+    align-items: center;
+}
+
+.craft-inline-schedule-body {
+    display: grid;
+    grid-template-columns: 4rem minmax(0, 1fr) auto;
+    gap: .85rem;
+    align-items: center;
+}
+
+.craft-inline-schedule-time {
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: .35rem;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.craft-venue {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    min-width: 0;
+    color: var(--pf-muted);
+}
+
+.craft-venue-icon {
+    flex: 0 0 auto;
+    font-size: .82rem;
+    line-height: 1;
+}
+
+.craft-venue-list {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .25rem;
+    min-width: 0;
+}
+
+.craft-venue-name {
+    overflow-wrap: anywhere;
+}
+
+.craft-venue-separator {
+    color: color-mix(in srgb, var(--pf-muted) 72%, transparent);
+}
+
+.craft-venue-inline {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .03em;
+}
+
+.craft-venue-detail,
+.craft-venue-card {
+    font-size: inherit;
 }
 
 .craft-inline-schedule-time strong {
@@ -793,6 +849,9 @@
     font-size: .98rem;
     font-weight: 800;
     line-height: 1.25;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .craft-inline-schedule-speaker {
@@ -838,7 +897,7 @@
 .craft-inline-schedule-details {
     display: grid;
     gap: .75rem;
-    padding: 0 1rem 1rem 10.15rem;
+    padding: 0 1rem 1rem 5.85rem;
 }
 
 .craft-inline-schedule-meta {
@@ -894,10 +953,18 @@
     }
 
     .craft-inline-schedule-summary {
-        grid-template-columns: 1fr;
-        align-items: start;
         gap: .55rem;
         padding: .7rem .8rem;
+    }
+
+    .craft-inline-schedule-topline {
+        gap: .45rem;
+    }
+
+    .craft-inline-schedule-body {
+        grid-template-columns: 2.8rem minmax(0, 1fr) auto;
+        gap: .65rem;
+        align-items: start;
     }
 
     .craft-inline-schedule-time strong {
@@ -908,7 +975,8 @@
     .craft-inline-schedule-speaker,
     .craft-inline-schedule-status,
     .craft-inline-schedule-meta,
-    .portfolio-description {
+    .portfolio-description,
+    .craft-venue-inline {
         font-size: .74rem;
     }
 
@@ -924,10 +992,6 @@
     .craft-inline-schedule-details {
         gap: .55rem;
         padding: 0 .8rem .8rem;
-    }
-
-    .craft-inline-schedule-speaker {
-        white-space: normal;
     }
 }
 
@@ -1496,4 +1560,129 @@
     color: var(--pf-muted);
     font-size: .82rem;
     line-height: 1.45;
+}
+
+.portfolio-filter-scroll {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .45rem !important;
+    padding-bottom: .1rem;
+}
+
+.portfolio-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .3rem .62rem;
+    font-size: .74rem;
+    line-height: 1.1;
+}
+
+.portfolio-filter span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    padding: .08rem .28rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--pf-line) 90%, transparent);
+    font-size: .66rem;
+}
+
+.portfolio-talk-status {
+    margin-top: .45rem;
+}
+
+.portfolio-talk-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    border: 1px solid var(--pf-line);
+    border-radius: 999px;
+    padding: .24rem .58rem;
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.portfolio-item.is-past {
+    opacity: .56;
+}
+
+.portfolio-item.is-active {
+    border-color: color-mix(in srgb, var(--pf-accent) 75%, var(--pf-line));
+    box-shadow: 0 1rem 2.4rem color-mix(in srgb, var(--pf-accent) 18%, transparent);
+}
+
+.portfolio-item[data-talk-status="upcoming"] .portfolio-talk-status-pill,
+.craft-inline-schedule-item[data-talk-status="upcoming"] .craft-inline-schedule-status {
+    background: color-mix(in srgb, var(--pf-card-2) 80%, transparent);
+}
+
+.portfolio-item[data-talk-status="active"] .portfolio-talk-status-pill,
+.craft-inline-schedule-item[data-talk-status="active"] .craft-inline-schedule-status {
+    color: var(--pf-bg);
+    background: var(--pf-accent);
+    border-color: var(--pf-accent);
+    box-shadow: 0 0 0 .18rem color-mix(in srgb, var(--pf-accent) 18%, transparent);
+}
+
+.portfolio-item[data-talk-status="past"] .portfolio-talk-status-pill,
+.craft-inline-schedule-item[data-talk-status="past"] .craft-inline-schedule-status {
+    color: var(--pf-muted);
+}
+
+.portfolio-item[data-talk-status="canceled"] .portfolio-talk-status-pill,
+.craft-inline-schedule-item[data-talk-status="canceled"] .craft-inline-schedule-status {
+    color: #fff;
+    background: #a94442;
+    border-color: #a94442;
+}
+
+.portfolio-item[data-talk-status="active"] .portfolio-talk-status-pill::before,
+.craft-inline-schedule-item[data-talk-status="active"] .craft-inline-schedule-status::before {
+    content: '';
+    width: .45rem;
+    height: .45rem;
+    border-radius: 999px;
+    background: currentColor;
+    animation: craft-on-air-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes craft-on-air-pulse {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: .35;
+        transform: scale(.72);
+    }
+}
+
+@media (max-width: 767.98px) {
+    .portfolio-filter-scroll {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+    }
+
+    .portfolio-filter {
+        padding: .24rem .48rem;
+        font-size: .7rem;
+    }
+
+    .portfolio-filter span {
+        min-width: 1.1rem;
+        padding: .05rem .24rem;
+        font-size: .62rem;
+    }
+
+    .portfolio-talk-status-pill {
+        font-size: .64rem;
+        padding: .2rem .5rem;
+    }
 }

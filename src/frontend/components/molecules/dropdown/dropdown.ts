@@ -54,6 +54,7 @@ const sortItems = (target: string, mode: string) => {
 export const createDropdowns = () => {
     const root = document as unknown as HTMLElement;
     const dropdowns = getElements(root, `[data-bs-toggle="dropdown"]`);
+    console.log('cd');
     for(const dropdown of dropdowns){
 
         if(dropdown) {
@@ -76,6 +77,7 @@ export const createDropdowns = () => {
                             const value = button.dataset.option ?? DEFAULT_VALUE;
                             document.documentElement.setAttribute(`data-${KEY}`, value);
                             save(KEY, value);
+                            console.log(KEY)
                             if(SORT_TARGET){
                                 sortItems(SORT_TARGET, value);
                             }

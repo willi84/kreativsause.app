@@ -1,6 +1,7 @@
 @import './variables/variables.css';
 @import './css/deprecated.css';
 @import './../components/organisms/portfolio/portfolio.css';
+@import './../components/molecules/app-status/app-status.css';
 /* @import './../../pages/portfolio/portfolio.css'; */
 /* @import './components/_fonts.css';
 @import './../../components/molecules/search/search.molecule.css';

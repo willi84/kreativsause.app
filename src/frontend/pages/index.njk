@@ -34,6 +34,35 @@ menu:
 
 <section class="portfolio-shell" data-portfolio data-view="cards" data-theme="dark">
     <div class="container py-4 py-lg-5">
+        <div class="craft-app-status-bar mb-3" data-app-status-bar>
+            <div class="craft-app-status-list" aria-label="App Status">
+                <span class="craft-app-status-pill" data-network-status data-state="unknown">
+                    <span class="craft-app-status-icon" aria-hidden="true">●</span>
+                    <span class="craft-app-status-text">Netz</span>
+                </span>
+                <span class="craft-app-status-pill" data-cache-status data-state="unknown">
+                    <span class="craft-app-status-icon" aria-hidden="true">✓</span>
+                    <span class="craft-app-status-text">Cache</span>
+                </span>
+                <span class="craft-app-status-pill" data-runtime-status data-state="unknown">
+                    <span class="craft-app-status-icon" aria-hidden="true">↻</span>
+                    <span class="craft-app-status-text">Quelle</span>
+                </span>
+                <span class="craft-app-status-pill" data-install-status data-state="unknown">
+                    <span class="craft-app-status-icon" aria-hidden="true">⬇</span>
+                    <span class="craft-app-status-text">App</span>
+                </span>
+            </div>
+            <div class="craft-app-status-actions">
+                <button
+                    class="btn btn-sm craft-app-install d-none"
+                    type="button"
+                    data-pwa-install
+                    aria-label="App installieren">
+                    ⬇ App installieren
+                </button>
+            </div>
+        </div>
         {{
             component("menu", {
                 page: page,
@@ -127,6 +156,7 @@ menu:
                     {% if item.days | contains(day) %}
                         {% set speakerNames = item.speakers | join(', ') if item.speakers else item.title %}
                         {% set speakerImage = item.speaker_image if item.speaker_image else '/assets/unknown.svg' %}
+                        {% set venueLabel = item.venue | join(' · ') if item.venue else '' %}
                         <details
                             class="craft-inline-schedule-item"
                             data-search-item
@@ -143,27 +173,53 @@ menu:
                             data-end="{{ item.end }}"
                             data-canceled="{% if item.canceled %}1{% else %}0{% endif %}">
                             <summary class="craft-inline-schedule-summary">
-                                <span class="craft-inline-schedule-time">
-                                    <strong>{{ item.start | formatDate('time') }}</strong>
-                                    <small>{{ item.end | formatDate('time') }}</small>
+                                <span class="craft-inline-schedule-topline">
+                                    {% if venueLabel %}
+                                        <span class="craft-venue craft-venue-inline">
+                                            <span class="craft-venue-icon" aria-hidden="true">🏡</span>
+                                            <span class="craft-venue-list">
+                                                {% for venue in item.venue %}
+                                                    <span class="craft-venue-name">{{ venue }}</span>{% if not loop.last %}<span class="craft-venue-separator" aria-hidden="true">·</span>{% endif %}
+                                                {% endfor %}
+                                            </span>
+                                        </span>
+                                    {% endif %}
+                                    <span class="craft-inline-schedule-time">
+                                        <strong>{{ item.start | formatDate('time') }}</strong>
+                                        <small>{{ item.end | formatDate('time') }}</small>
+                                    </span>
                                 </span>
-                                <span class="craft-inline-schedule-avatar" aria-hidden="true">
-                                    <img
-                                        src="{{ speakerImage }}"
-                                        alt="Speaker photo of {{ speakerNames }}"
-                                        width="56"
-                                        height="56"
-                                        loading="lazy">
+                                <span class="craft-inline-schedule-body">
+                                    <span class="craft-inline-schedule-avatar" aria-hidden="true">
+                                        <img
+                                            src="{{ speakerImage }}"
+                                            alt="Speaker photo of {{ speakerNames }}"
+                                            width="56"
+                                            height="56"
+                                            loading="lazy">
+                                    </span>
+                                    <span class="craft-inline-schedule-copy">
+                                        <span class="craft-inline-schedule-title" data-search-mark>{{ item.title }}</span>
+                                        <span class="craft-inline-schedule-speaker" data-search-mark>{{ speakerNames }}</span>
+                                    </span>
+                                    <span class="craft-inline-schedule-status" data-talk-status><span data-talk-status-label>Status</span></span>
                                 </span>
-                                <span class="craft-inline-schedule-copy">
-                                    <span class="craft-inline-schedule-title" data-search-mark>{{ item.title }}</span>
-                                    <span class="craft-inline-schedule-speaker" data-search-mark>{{ speakerNames }}</span>
-                                </span>
-                                <span class="craft-inline-schedule-status" data-talk-status-label>Status</span>
                             </summary>
 
-                            <div class="craft-inline-schedule-details" data-talk-status>
+                            <div class="craft-inline-schedule-details">
                                 <p class="craft-inline-schedule-meta">{{ item.start | formatDate('date') }} · {{ item.start | formatDate('time') }} - {{ item.end | formatDate('time') }}</p>
+                                {% if venueLabel %}
+                                    <p class="craft-inline-schedule-meta">
+                                        <span class="craft-venue craft-venue-detail">
+                                            <span class="craft-venue-icon" aria-hidden="true">🏡</span>
+                                            <span class="craft-venue-list">
+                                                {% for venue in item.venue %}
+                                                    <span class="craft-venue-name">{{ venue }}</span>{% if not loop.last %}<span class="craft-venue-separator" aria-hidden="true">·</span>{% endif %}
+                                                {% endfor %}
+                                            </span>
+                                        </span>
+                                    </p>
+                                {% endif %}
                                 {% if item.description %}
                                     <div class="craft-inline-schedule-description">
                                         {% for description in item.description %}

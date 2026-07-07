@@ -1,0 +1,124 @@
+.craft-app-status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    padding: .7rem .85rem;
+    border: 1px solid var(--pf-line);
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--pf-panel) 92%, transparent);
+    box-shadow: 0 .65rem 1.8rem rgba(0, 0, 0, .12);
+    backdrop-filter: blur(12px);
+}
+
+.craft-app-status-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .45rem;
+    min-width: 0;
+}
+
+.craft-app-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .35rem .65rem;
+    border: 1px solid var(--pf-line);
+    border-radius: 999px;
+    color: var(--pf-text);
+    font-size: .74rem;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.craft-app-status-icon {
+    font-size: .8rem;
+    line-height: 1;
+}
+
+.craft-app-status-pill[data-state="ok"] {
+    background: color-mix(in srgb, var(--pf-card-2) 82%, transparent);
+}
+
+.craft-app-status-pill[data-state="ok"] .craft-app-status-icon {
+    color: #24c36e;
+}
+
+.craft-app-status-pill[data-state="warn"] {
+    background: color-mix(in srgb, #c43c3c 16%, transparent);
+}
+
+.craft-app-status-pill[data-state="warn"] .craft-app-status-icon {
+    color: #ff6b6b;
+}
+
+.craft-app-status-pill[data-state="unknown"] .craft-app-status-icon {
+    color: var(--pf-muted);
+}
+
+.craft-app-status-actions {
+    display: flex;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+}
+
+.craft-app-install {
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--pf-accent) 55%, var(--pf-line));
+    background: color-mix(in srgb, var(--pf-accent) 22%, transparent);
+    color: var(--pf-text);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.craft-app-install:hover,
+.craft-app-install:focus-visible {
+    background: color-mix(in srgb, var(--pf-accent) 34%, transparent);
+    color: var(--pf-text);
+}
+
+@media (max-width: 767.98px) {
+    .craft-app-status-bar {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: .5rem;
+        padding: .55rem .65rem;
+    }
+
+    .craft-app-status-list {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .craft-app-status-list::-webkit-scrollbar {
+        display: none;
+    }
+
+    .craft-app-status-pill {
+        justify-content: center;
+        padding: .32rem .48rem;
+        min-width: 2rem;
+        flex: 0 0 auto;
+    }
+
+    .craft-app-status-pill[data-runtime-status] {
+        display: none;
+    }
+
+    .craft-app-status-pill:not([data-install-status]) .craft-app-status-text {
+        display: none;
+    }
+
+    .craft-app-status-actions {
+        width: auto;
+    }
+
+    .craft-app-install {
+        width: auto;
+        padding-inline: .7rem;
+        font-size: .74rem;
+    }
+}

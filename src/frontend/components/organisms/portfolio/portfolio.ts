@@ -87,10 +87,10 @@ const parseEventDate = (value = ''): Date | null => {
 };
 
 const TALK_STATE_LABELS: Record<TalkState, string> = {
-    upcoming: 'Upcoming',
-    active: 'Live',
-    past: 'Past',
-    canceled: 'Canceled',
+    upcoming: 'upcoming',
+    active: 'On Air',
+    past: 'done',
+    canceled: 'Abgesagt',
 };
 
 const getTalkState = (startValue = '', endValue = '', canceledValue = ''): TalkState => {
@@ -106,6 +106,8 @@ const getTalkState = (startValue = '', endValue = '', canceledValue = ''): TalkS
 
     // API timestamps are absolute instants, so comparing them to now keeps the Europe/Berlin schedule state correct.
     const now = new Date();
+    console.log(now);
+    console.log(new Date(start));
     if (now.getTime() < start.getTime()) {
         return 'upcoming';
     }
@@ -360,6 +362,7 @@ const getRouteTooltip = (entry: RouteEntry): string => {
 };
 
 const getLiveTalkIndex = (talks: PlanTalk[], now: Date): number => {
+    console.log()
     const activeIndex = talks.findIndex((talk) => getTalkEndDate(talk).getTime() > now.getTime());
 
     if (activeIndex >= 0) {
@@ -370,7 +373,9 @@ const getLiveTalkIndex = (talks: PlanTalk[], now: Date): number => {
 };
 
 const formatConferenceDayLabel = (value: string): string => {
-    const date = new Date(value + 'T00:00:00');
+    console.log(value);
+    const date = new Date(value);
+    // const date = new Date(value + 'T00:00:00');
 
     return new Intl.DateTimeFormat('en-US', {
         weekday: 'short',
@@ -1383,17 +1388,42 @@ const applyCraftExperience = (root: HTMLElement, filterButtons: HTMLButtonElemen
         });
     };
 
+    const getItemStartTime = (item: HTMLElement): number => {
+        const start = item.dataset.start ? new Date(item.dataset.start).getTime() : 0;
+        return Number.isNaN(start) ? 0 : start;
+    };
+
+    const sortSectionItemsByStart = (container: HTMLElement | null): void => {
+        if (!container) {
+            return;
+        }
+
+        Array.from(container.querySelectorAll<HTMLElement>(':scope > [data-talk-item]'))
+            .sort((left, right) => getItemStartTime(left) - getItemStartTime(right))
+            .forEach((item) => {
+                container.appendChild(item);
+            });
+    };
+
+    const sortTalkSections = (): void => {
+        scheduleDays.forEach((day) => {
+            sortSectionItemsByStart(day.querySelector<HTMLElement>('.portfolio-grid'));
+            sortSectionItemsByStart(day.querySelector<HTMLElement>('.craft-inline-schedule'));
+        });
+    };
+
     const updateTalkStatuses = () => {
         talkStatusItems.forEach((item) => {
-            const state = getTalkState(item.dataset.start || '', item.dataset.end || '', item.dataset.canceled || '');
-            const label = item.parentElement?.querySelector<HTMLElement>('[data-talk-status-label]');
+            const container = item.closest<HTMLElement>('[data-talk-item]');
+            const state = getTalkState(container?.dataset.start || '', container?.dataset.end || '', container?.dataset.canceled || '');
+            const label = container?.querySelector<HTMLElement>('[data-talk-status-label]');
 
             item.dataset.talkStatus = state;
-            item.parentElement?.setAttribute('data-talk-status', state);
-            item.parentElement?.classList.toggle('is-past', state === 'past');
-            item.parentElement?.classList.toggle('is-active', state === 'active');
-            item.parentElement?.classList.toggle('is-upcoming', state === 'upcoming');
-            item.parentElement?.classList.toggle('is-canceled', state === 'canceled');
+            container?.setAttribute('data-talk-status', state);
+            container?.classList.toggle('is-past', state === 'past');
+            container?.classList.toggle('is-active', state === 'active');
+            container?.classList.toggle('is-upcoming', state === 'upcoming');
+            container?.classList.toggle('is-canceled', state === 'canceled');
 
             if (label) {
                 label.textContent = TALK_STATE_LABELS[state];
@@ -1436,6 +1466,7 @@ const applyCraftExperience = (root: HTMLElement, filterButtons: HTMLButtonElemen
 
     const refreshCraftUi = () => {
         syncPlanPanelHeight();
+        sortTalkSections();
         updateTalkStatuses();
         updateSearchResults();
         updateMapBubbles();
