@@ -202,12 +202,31 @@ menu:
                                         <span class="craft-inline-schedule-title" data-search-mark>{{ item.title }}</span>
                                         <span class="craft-inline-schedule-speaker" data-search-mark>{{ speakerNames }}</span>
                                     </span>
+                                    {% if item.changes.length > 0 %}
+                                        <span class="craft-inline-schedule-change-flag" title="Änderung vorhanden">⚠️</span>
+                                    {% endif %}
                                     <span class="craft-inline-schedule-status" data-talk-status><span data-talk-status-label>Status</span></span>
                                 </span>
                             </summary>
 
                             <div class="craft-inline-schedule-details">
                                 <p class="craft-inline-schedule-meta">{{ item.start | formatDate('date') }} · {{ item.start | formatDate('time') }} - {{ item.end | formatDate('time') }}</p>
+                                {% if item.changes.length > 0 %}
+                                    <p class="portfolio-change-note" data-search-mark>
+                                        <span aria-hidden="true">⚠️</span>
+                                        <span>
+                                            Änderung:
+                                            {% for change in item.changes %}
+                                                {% if change == 'cancelled' %}abgesagt{% endif %}
+                                                {% if change == 'new' %}neu{% endif %}
+                                                {% if change == 'changed location' %}Ort geändert{% endif %}
+                                                {% if change == 'changed day' %}Tag geändert{% endif %}
+                                                {% if change == 'changed time' %}Zeit geändert{% endif %}
+                                                {% if loop.index < item.changes.length %}, {% endif %}
+                                            {% endfor %}
+                                        </span>
+                                    </p>
+                                {% endif %}
                                 {% if venueLabel %}
                                     <p class="craft-inline-schedule-meta">
                                         <span class="craft-venue craft-venue-detail">

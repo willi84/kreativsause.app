@@ -65,9 +65,25 @@
                 <div class="portfolio-talk-status" data-talk-status>
                     <span class="portfolio-talk-status-pill" data-talk-status-label>Bald</span>
                 </div>
+                {% if item.changes.length > 0 %}
+                    <p class="portfolio-change-note" data-search-mark>
+                        <span aria-hidden="true">⚠️</span>
+                        <span>
+                            Änderung:
+                            {% for change in item.changes %}
+                                {% if change == 'cancelled' %}abgesagt{% endif %}
+                                {% if change == 'new' %}neu{% endif %}
+                                {% if change == 'changed location' %}Ort geändert{% endif %}
+                                {% if change == 'changed day' %}Tag geändert{% endif %}
+                                {% if change == 'changed time' %}Zeit geändert{% endif %}
+                                {% if loop.index < item.changes.length %}, {% endif %}
+                            {% endfor %}
+                        </span>
+                    </p>
+                {% endif %}
             </div>
-            {% if item.pinned == "TRUE" %}
-                <span class="portfolio-pin" title="Hervorgehoben">📌</span>
+            {% if item.changes.length > 0 %}
+                <span class="portfolio-pin" title="Änderung vorhanden">⚠️</span>
             {% endif %}
         </div>
 

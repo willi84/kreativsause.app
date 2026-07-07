@@ -136,6 +136,19 @@
     .portfolio-item-top { display: flex; justify-content: space-between; gap: .75rem; }
     .portfolio-item-title { color: var(--pf-text); font-size: 1rem; font-weight: 800; line-height: 1.25; }
     .portfolio-pin { flex: 0 0 auto; }
+    .portfolio-change-note {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        margin: .45rem 0 0;
+        color: #9a6700;
+        font-size: .82rem;
+        font-weight: 700;
+    }
+
+    [data-bs-theme="dark"] .portfolio-change-note {
+        color: #f2cc60;
+    }
     .portfolio-badges { display: flex; flex-wrap: wrap; gap: .35rem; }
     .portfolio-muted-badge { color: var(--pf-muted); border: 1px solid var(--pf-line); background: transparent; }
     .portfolio-description { color: var(--pf-muted); margin: 0; font-size: .9rem; }
@@ -872,6 +885,12 @@
     text-transform: uppercase;
     letter-spacing: .05em;
     white-space: nowrap;
+}
+
+.craft-inline-schedule-change-flag {
+    align-self: center;
+    font-size: 1rem;
+    line-height: 1;
 }
 
 .craft-inline-schedule-item[data-talk-status="upcoming"] .craft-inline-schedule-status {
