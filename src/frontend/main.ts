@@ -4,6 +4,7 @@ import { createAppStatusBar } from './components/molecules/app-status/app-status
 import { createDropdowns } from './components/molecules/dropdown/dropdown';
 import { activateFilterButtons } from './components/molecules/filter-button/filter-button';
 import { setupSearch } from './components/molecules/search/search.molecule';
+import { createPiSoundboard } from './components/organisms/pi-soundboard/pi-soundboard';
 import { createPortfolio } from './components/organisms/portfolio/portfolio';
 
 type BeforeInstallPromptEvent = Event & {
@@ -87,6 +88,7 @@ const setupPwaInstall = (): void => {
     activateFilterButtons('all');
     setupPwaInstall();
     createAppStatusBar();
+    createPiSoundboard();
 
     if ('serviceWorker' in navigator && import.meta.env.PROD) {
         window.addEventListener('load', () => {

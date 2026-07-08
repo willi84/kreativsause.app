@@ -1,0 +1,61 @@
+---
+layout: base.template.njk
+title: Glockenklang, Musik und Tanz mit Pi (3,14159)
+navigation: true
+footer: false
+full_content: true
+menuLinkEnabled: true
+menu:
+  label: Pi Musik
+  emoji: 🔔
+  order: 110
+---
+
+{% set soundboardTracks = [
+  { id: 1, color: '#d8572a', sample: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+  { id: 2, color: '#4f6d7a', sample: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+  { id: 3, color: '#3c8d2f', sample: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
+  { id: 4, color: '#7b5ea7', sample: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
+  { id: 5, color: '#c44569', sample: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
+  { id: 6, color: '#0081a7', sample: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' },
+  { id: 7, color: '#f4a261', sample: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3' },
+  { id: 8, color: '#2a9d8f', sample: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3' }
+] %}
+
+<section class="pi-soundboard" aria-labelledby="pi-soundboard-title">
+    <div class="pi-soundboard__hero">
+        <p class="pi-soundboard__eyebrow">Erstes Beispiel</p>
+        <h1 id="pi-soundboard-title">Glockenklang, Musik und Tanz mit Pi (3,14159)</h1>
+        <p class="pi-soundboard__intro">
+            Wähle den Button zur Zahl.
+        </p>
+    </div>
+
+    <div class="pi-soundboard__grid" data-pi-soundboard>
+        {% for track in soundboardTracks %}
+            <article
+                class="pi-track"
+                data-pi-track="{{ track.id }}"
+                data-pi-sample="{{ track.sample }}"
+                style="--pi-track-color: {{ track.color }};">
+                <button
+                    class="pi-track__button"
+                    type="button"
+                    data-pi-track-button
+                    aria-label="Klangstück {{ track.id }} abspielen oder stoppen">
+                    <span class="pi-track__number">{{ track.id }}</span>
+                </button>
+                {# <div class="pi-track__meta">
+                    <span class="pi-track__source" data-pi-track-source>Internet</span>
+                    <label class="pi-track__upload" for="pi-track-upload-{{ track.id }}">Audio wählen</label>
+                    <input
+                        class="pi-track__input"
+                        id="pi-track-upload-{{ track.id }}"
+                        type="file"
+                        accept="audio/*"
+                        data-pi-track-upload>
+                </div> #}
+            </article>
+        {% endfor %}
+    </div>
+</section>

@@ -38,15 +38,17 @@
                 <p class="text-muted small mb-3">{{ page.url }}</p>
                 <ul class="navbar-nav gap-2">
                     {% for item in menuItems %}
-                        <li class="nav-item">
-                            <a
-                                class="nav-link{% if page.url == item.url %} active fw-semibold{% endif %}"
-                                href="{{ item.url }}"
-                                {% if page.url == item.url %}aria-current="page"{% endif %}>
-                                {% if item.emoji %}<span class="me-2">{{ item.emoji }}</span>{% endif %}
-                                {{ item.title }}
-                            </a>
-                        </li>
+                        {% if item.data.menuLinkEnabled != false %}
+                            <li class="nav-item">
+                                <a
+                                    class="nav-link{% if page.url == item.url %} active fw-semibold{% endif %}"
+                                    href="{{ item.url }}"
+                                    {% if page.url == item.url %}aria-current="page"{% endif %}>
+                                    {% if item.emoji %}<span class="me-2">{{ item.emoji }}</span>{% endif %}
+                                    {{ item.title }}
+                                </a>
+                            </li>
+                        {% endif %}
                     {% endfor %}
                 </ul>
             </div>
