@@ -22,40 +22,109 @@ menu:
   { id: 8, color: '#2a9d8f', sample: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3' }
 ] %}
 
-<section class="pi-soundboard" aria-labelledby="pi-soundboard-title">
-    <div class="pi-soundboard__hero">
-        <p class="pi-soundboard__eyebrow">Erstes Beispiel</p>
-        <h1 id="pi-soundboard-title">Glockenklang, Musik und Tanz mit Pi (3,14159)</h1>
-        <p class="pi-soundboard__intro">
-            Wähle den Button zur Zahl.
-        </p>
-    </div>
+<main class="grid">
+  {% for track in soundboardTracks %}
+    <button data-sound="{{ track.sample }}" class="btn" style="background-color: {{ track.color }};">{{ track.id }}</button>
+  {% endfor %}
+  </main>
+<style>
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
 
-    <div class="pi-soundboard__grid" data-pi-soundboard>
-        {% for track in soundboardTracks %}
-            <article
-                class="pi-track"
-                data-pi-track="{{ track.id }}"
-                data-pi-sample="{{ track.sample }}"
-                style="--pi-track-color: {{ track.color }};">
-                <button
-                    class="pi-track__button"
-                    type="button"
-                    data-pi-track-button
-                    aria-label="Klangstück {{ track.id }} abspielen oder stoppen">
-                    <span class="pi-track__number">{{ track.id }}</span>
-                </button>
-                {# <div class="pi-track__meta">
-                    <span class="pi-track__source" data-pi-track-source>Internet</span>
-                    <label class="pi-track__upload" for="pi-track-upload-{{ track.id }}">Audio wählen</label>
-                    <input
-                        class="pi-track__input"
-                        id="pi-track-upload-{{ track.id }}"
-                        type="file"
-                        accept="audio/*"
-                        data-pi-track-upload>
-                </div> #}
-            </article>
-        {% endfor %}
-    </div>
-</section>
+.grid {
+  width: 100vw;
+  height: 100dvh;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+}
+
+.btn {
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  overflow: hidden;
+
+  font-size: clamp(3rem, 18vmin, 12rem);
+  font-weight: 900;
+  line-height: 1;
+}
+.active-sound{
+  opacity: 1;
+}
+
+.active .btn{
+  opacity: 0.5;
+}
+.active .btn.active-sound{
+  opacity: 1;
+}
+@media (orientation: landscape) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+}
+</style>
+<script>
+ const activeSoundClass = 'active-sound';
+const activeClass = 'active';
+
+const buttons = document.querySelectorAll('.btn[data-sound]');
+const grid = document.querySelector('.grid');
+
+let currentAudio = null;
+let currentButton = null;
+
+buttons.forEach(button => {
+  button.addEventListener('click', () => {
+
+    // gleicher Button -> stoppen
+    if (button === currentButton) {
+      currentAudio?.pause();
+      currentAudio.currentTime = 0;
+
+      button.classList.remove(activeSoundClass);
+      grid.classList.remove(activeClass);
+
+      currentAudio = null;
+      currentButton = null;
+      return;
+    }
+
+    // vorherigen stoppen
+    currentAudio?.pause();
+    if (currentAudio) currentAudio.currentTime = 0;
+
+    buttons.forEach(b => b.classList.remove(activeSoundClass));
+
+    // neuen starten
+    button.classList.add(activeSoundClass);
+    grid.classList.add(activeClass);
+
+    currentAudio = new Audio(button.dataset.sound);
+    currentAudio.play();
+
+    currentButton = button;
+
+    currentAudio.onended = () => {
+      button.classList.remove(activeSoundClass);
+      grid.classList.remove(activeClass);
+      currentAudio = null;
+      currentButton = null;
+    };
+  });
+});
+  </script>
