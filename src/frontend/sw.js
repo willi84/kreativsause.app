@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kreativsause-app-v1';
+const CACHE_NAME = 'kreativsause-app-v2';
 const APP_SHELL = [
     '/',
     '/assets/bootstrap.min.css',
@@ -10,9 +10,61 @@ const APP_SHELL = [
     '/assets/manifest.webmanifest',
     '/assets/unknown.svg',
 ];
+const MUSIC_ASSETS = [
+    '/assets/music/Pi-1.mp3',
+    '/assets/music/Pi-2.mp3',
+    '/assets/music/Pi-3.mp3',
+    '/assets/music/Pi-4.mp3',
+    '/assets/music/Pi-5.mp3',
+    '/assets/music/Pi-6.mp3',
+    '/assets/music/Pi-7.mp3',
+    '/assets/music/Pi-8.mp3',
+    '/assets/music/Pi-9.mp3',
+];
+const PRECACHE_ASSETS = [...APP_SHELL, ...MUSIC_ASSETS];
 
 const isCacheableResponse = (response) => {
-    return response.ok || response.type === 'opaque';
+    return (response.ok && response.status !== 206) || response.type === 'opaque';
+};
+
+const isRangeRequest = (request) => {
+    return request.headers.has('range');
+};
+
+const createRangeResponse = async (request, response) => {
+    const rangeHeader = request.headers.get('range');
+    const match = rangeHeader?.match(/bytes=(\d+)-(\d*)/);
+
+    if (!match) {
+        return response;
+    }
+
+    const fileBuffer = await response.arrayBuffer();
+    const fileSize = fileBuffer.byteLength;
+    const rangeStart = Number.parseInt(match[1], 10);
+    const rangeEnd = match[2] ? Number.parseInt(match[2], 10) : fileSize - 1;
+    const safeEnd = Math.min(rangeEnd, fileSize - 1);
+
+    if (Number.isNaN(rangeStart) || Number.isNaN(safeEnd) || rangeStart > safeEnd || rangeStart >= fileSize) {
+        return new Response(null, {
+            status: 416,
+            headers: {
+                'Content-Range': `bytes */${fileSize}`,
+            },
+        });
+    }
+
+    const chunk = fileBuffer.slice(rangeStart, safeEnd + 1);
+    const headers = new Headers(response.headers);
+    headers.set('Content-Length', String(chunk.byteLength));
+    headers.set('Content-Range', `bytes ${rangeStart}-${safeEnd}/${fileSize}`);
+    headers.set('Accept-Ranges', 'bytes');
+
+    return new Response(chunk, {
+        status: 206,
+        statusText: 'Partial Content',
+        headers,
+    });
 };
 
 const notifyClients = async (type) => {
@@ -40,6 +92,16 @@ const updateCache = async (request, response) => {
 };
 
 const cacheFirst = async (request) => {
+    if (isRangeRequest(request)) {
+        const cached = await caches.match(request.url);
+
+        if (cached) {
+            return createRangeResponse(request, cached);
+        }
+
+        return fetch(request);
+    }
+
     const cached = await caches.match(request);
     if (cached) {
         return cached;
@@ -68,7 +130,7 @@ const networkFirst = async (request) => {
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then((cache) => cache.addAll(APP_SHELL))
+            .then((cache) => cache.addAll(PRECACHE_ASSETS))
             .then(() => self.skipWaiting())
     );
 });
@@ -112,6 +174,7 @@ self.addEventListener('fetch', (event) => {
         || request.destination === 'script'
         || request.destination === 'font'
         || request.destination === 'image'
+        || request.destination === 'audio'
         || url.pathname.startsWith('/assets/');
     const isSameOrigin = url.origin === self.location.origin;
 

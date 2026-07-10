@@ -14,6 +14,57 @@ type BeforeInstallPromptEvent = Event & {
 
 type InstallUiState = 'available' | 'installed' | 'unavailable';
 
+const MUSIC_CACHE_NAME = 'kreativsause-app-v2';
+const MUSIC_ASSETS = [
+    '/assets/music/Pi-1.mp3',
+    '/assets/music/Pi-2.mp3',
+    '/assets/music/Pi-3.mp3',
+    '/assets/music/Pi-4.mp3',
+    '/assets/music/Pi-5.mp3',
+    '/assets/music/Pi-6.mp3',
+    '/assets/music/Pi-7.mp3',
+    '/assets/music/Pi-8.mp3',
+    '/assets/music/Pi-9.mp3',
+];
+
+const isStartPage = (): boolean => {
+    return window.location.pathname === '/' || window.location.pathname === '/index.html';
+};
+
+const cacheMusicAsset = async (assetUrl: string): Promise<void> => {
+    if (!('caches' in window)) {
+        return;
+    }
+
+    const existing = await caches.match(assetUrl);
+    if (existing) {
+        return;
+    }
+
+    const response = await fetch(assetUrl, { cache: 'reload' });
+
+    if (!response.ok) {
+        throw new Error(`Failed to preload ${assetUrl}`);
+    }
+
+    const cache = await caches.open(MUSIC_CACHE_NAME);
+    await cache.put(assetUrl, response.clone());
+};
+
+const preloadMusicAssets = (): void => {
+    if (!import.meta.env.PROD || !isStartPage()) {
+        return;
+    }
+
+    const scheduleWarmup = window.requestIdleCallback
+        ? (callback: () => void) => window.requestIdleCallback(callback)
+        : (callback: () => void) => window.setTimeout(callback, 250);
+
+    scheduleWarmup(() => {
+        void Promise.allSettled(MUSIC_ASSETS.map((assetUrl) => cacheMusicAsset(assetUrl)));
+    });
+};
+
 const setupPwaInstall = (): void => {
     const button = document.querySelector<HTMLButtonElement>('[data-pwa-install]');
     const installStatus = document.querySelector<HTMLElement>('[data-install-status]');
@@ -89,6 +140,7 @@ const setupPwaInstall = (): void => {
     setupPwaInstall();
     createAppStatusBar();
     createPiSoundboard();
+    preloadMusicAssets();
 
     if ('serviceWorker' in navigator && import.meta.env.PROD) {
         window.addEventListener('load', () => {

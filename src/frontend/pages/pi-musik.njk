@@ -12,119 +12,266 @@ menu:
 ---
 
 {% set soundboardTracks = [
-  { id: 1, color: '#d8572a', sample: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-  { id: 2, color: '#4f6d7a', sample: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-  { id: 3, color: '#3c8d2f', sample: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-  { id: 4, color: '#7b5ea7', sample: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
-  { id: 5, color: '#c44569', sample: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
-  { id: 6, color: '#0081a7', sample: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' },
-  { id: 7, color: '#f4a261', sample: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3' },
-  { id: 8, color: '#2a9d8f', sample: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3' }
+  { id: 1, color: '#cadff4', sample: '/assets/music/Pi-1.mp3' },
+  { id: 2, color: '#d0cfd4', sample: '/assets/music/Pi-2.mp3' },
+  { id: 3, color: '#fcea48', sample: '/assets/music/Pi-3.mp3' },
+  { id: 4, color: '#ef2823', sample: '/assets/music/Pi-4.mp3' },
+  { id: 5, color: '#aef887', sample: '/assets/music/Pi-5.mp3' },
+  { id: 6, color: '#eab071', sample: '/assets/music/Pi-6.mp3' },
+  { id: 7, color: '#a05e2c', sample: '/assets/music/Pi-7.mp3' },
+  { id: 8, color: '#ff7d79', sample: '/assets/music/Pi-8.mp3' },
+  { id: 9, color: '#f99001', sample: '/assets/music/Pi-9.mp3' }
 ] %}
 
-<main class="grid">
+<main class="pi-soundboard" aria-label="Pi-Musik-Soundboard">
   {% for track in soundboardTracks %}
-    <button data-sound="{{ track.sample }}" class="btn" style="background-color: {{ track.color }};">{{ track.id }}</button>
+    <button
+      type="button"
+      data-sound="{{ track.sample }}"
+      class="pi-soundboard__button"
+      style="--button-color: {{ track.color }};"
+      aria-label="Sound {{ track.id }} abspielen"
+    >
+      <span class="pi-soundboard__number">{{ track.id }}</span>
+      <span class="pi-soundboard__cache" aria-hidden="true" title="Im Cache verfügbar"></span>
+    </button>
   {% endfor %}
-  </main>
+</main>
+
 <style>
-html,
-body {
-  margin: 0;
-  height: 100%;
-  overflow: hidden;
-}
-
-.grid {
-  width: 100vw;
-  height: 100dvh;
-
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(4, minmax(0, 1fr));
-}
-
-.btn {
-  min-width: 0;
-  min-height: 0;
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 0;
-  overflow: hidden;
-
-  font-size: clamp(3rem, 18vmin, 12rem);
-  font-weight: 900;
-  line-height: 1;
-}
-.active-sound{
-  opacity: 1;
-}
-
-.active .btn{
-  opacity: 0.5;
-}
-.active .btn.active-sound{
-  opacity: 1;
-}
-@media (orientation: landscape) {
-  .grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-template-rows: repeat(2, minmax(0, 1fr));
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
   }
-}
+
+  .pi-soundboard {
+    box-sizing: border-box;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    padding:
+      env(safe-area-inset-top)
+      env(safe-area-inset-right)
+      env(safe-area-inset-bottom)
+      env(safe-area-inset-left);
+
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-rows: repeat(4, minmax(0, 1fr));
+  }
+
+  .pi-soundboard__button {
+    box-sizing: border-box;
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+    place-items: center;
+
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: var(--button-color);
+    color: #000;
+    cursor: pointer;
+    overflow: hidden;
+
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(3rem, 18vmin, 11rem);
+    font-weight: 400;
+    line-height: 1;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .pi-soundboard__number {
+    display: block;
+  }
+
+  .pi-soundboard__cache {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 999px;
+    background: #1d6b2f;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.45);
+    opacity: 0;
+    transform: scale(0.7);
+    transition: opacity 120ms ease, transform 120ms ease;
+  }
+
+  .pi-soundboard__button.is-cached .pi-soundboard__cache {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+
+  /* Hochformat wie in der Vorlage: 2 + 2 + 2 + 3 */
+  .pi-soundboard__button:nth-child(-n + 6) {
+    grid-column: span 3;
+  }
+
+  .pi-soundboard__button:nth-child(n + 7) {
+    grid-column: span 2;
+  }
+
+  .pi-soundboard.is-active .pi-soundboard__button {
+    opacity: 0.5;
+  }
+
+  .pi-soundboard.is-active .pi-soundboard__button.is-active {
+    opacity: 1;
+  }
+
+  .pi-soundboard__button:focus-visible {
+    outline: 4px solid #000;
+    outline-offset: -4px;
+  }
+
+  @media (orientation: landscape), (min-width: 700px) {
+    .pi-soundboard {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+    }
+
+    .pi-soundboard__button:nth-child(n) {
+      grid-column: span 1;
+    }
+
+    .pi-soundboard__button {
+      font-size: clamp(3rem, 20vmin, 12rem);
+    }
+  }
 </style>
+
 <script>
- const activeSoundClass = 'active-sound';
-const activeClass = 'active';
+  const MUSIC_CACHE_NAME = 'kreativsause-app-v2';
+  const soundboard = document.querySelector('.pi-soundboard');
+  const buttons = document.querySelectorAll('.pi-soundboard__button[data-sound]');
 
-const buttons = document.querySelectorAll('.btn[data-sound]');
-const grid = document.querySelector('.grid');
+  let currentAudio = null;
+  let currentButton = null;
 
-let currentAudio = null;
-let currentButton = null;
+  const resetSoundboard = () => {
+    currentAudio?.pause();
 
-buttons.forEach(button => {
-  button.addEventListener('click', () => {
-
-    // gleicher Button -> stoppen
-    if (button === currentButton) {
-      currentAudio?.pause();
+    if (currentAudio) {
       currentAudio.currentTime = 0;
+    }
 
-      button.classList.remove(activeSoundClass);
-      grid.classList.remove(activeClass);
+    buttons.forEach(button => {
+      button.classList.remove('is-active');
+      button.setAttribute('aria-pressed', 'false');
+    });
 
-      currentAudio = null;
-      currentButton = null;
+    soundboard?.classList.remove('is-active');
+    currentAudio = null;
+    currentButton = null;
+  };
+
+  const ensureTrackCached = async (sampleUrl) => {
+    if (!('caches' in window)) {
+      return false;
+    }
+
+    const existing = await caches.match(sampleUrl);
+
+    if (existing) {
+      return true;
+    }
+
+    const response = await fetch(sampleUrl, { cache: 'reload' });
+
+    if (!response.ok) {
+      return false;
+    }
+
+    const cache = await caches.open(MUSIC_CACHE_NAME);
+    await cache.put(sampleUrl, response.clone());
+
+    return true;
+  };
+
+  const syncCachedState = async () => {
+    if (!('caches' in window)) {
       return;
     }
 
-    // vorherigen stoppen
-    currentAudio?.pause();
-    if (currentAudio) currentAudio.currentTime = 0;
+    await Promise.all(Array.from(buttons).map(async (button) => {
+      const sampleUrl = button.dataset.sound;
 
-    buttons.forEach(b => b.classList.remove(activeSoundClass));
+      if (!sampleUrl) {
+        return;
+      }
 
-    // neuen starten
-    button.classList.add(activeSoundClass);
-    grid.classList.add(activeClass);
+      const cached = await caches.match(sampleUrl);
+      button.classList.toggle('is-cached', Boolean(cached));
+    }));
+  };
 
-    currentAudio = new Audio(button.dataset.sound);
-    currentAudio.play();
+  buttons.forEach(button => {
+    button.setAttribute('aria-pressed', 'false');
 
-    currentButton = button;
+    button.addEventListener('click', async () => {
+      if (button === currentButton) {
+        resetSoundboard();
+        return;
+      }
 
-    currentAudio.onended = () => {
-      button.classList.remove(activeSoundClass);
-      grid.classList.remove(activeClass);
-      currentAudio = null;
-      currentButton = null;
-    };
+      resetSoundboard();
+
+      button.classList.add('is-active');
+      button.setAttribute('aria-pressed', 'true');
+      soundboard?.classList.add('is-active');
+
+      currentButton = button;
+
+      const sampleUrl = button.dataset.sound;
+      const cachePromise = sampleUrl
+        ? ensureTrackCached(sampleUrl).then(() => syncCachedState()).catch(() => undefined)
+        : Promise.resolve();
+
+      currentAudio = new Audio(sampleUrl);
+
+      currentAudio.addEventListener('ended', resetSoundboard, { once: true });
+      currentAudio.addEventListener('error', resetSoundboard, { once: true });
+
+      try {
+        await currentAudio.play();
+        await cachePromise;
+      } catch {
+        resetSoundboard();
+      }
+    });
   });
-});
-  </script>
+
+  window.addEventListener('load', () => {
+    window.setTimeout(() => {
+      void syncCachedState();
+      navigator.serviceWorker?.controller?.postMessage({ type: 'CACHE_STATUS_REQUEST' });
+    }, 400);
+
+    navigator.serviceWorker?.ready.then(() => {
+      navigator.serviceWorker?.controller?.postMessage({ type: 'CACHE_STATUS_REQUEST' });
+      return syncCachedState();
+    }).catch(() => undefined);
+  });
+
+  navigator.serviceWorker?.addEventListener('controllerchange', () => {
+    void syncCachedState();
+    navigator.serviceWorker?.controller?.postMessage({ type: 'CACHE_STATUS_REQUEST' });
+  });
+
+  navigator.serviceWorker?.addEventListener('message', (event) => {
+    if (event.data?.type === 'CACHE_STATUS_RESPONSE') {
+      void syncCachedState();
+    }
+  });
+</script>
